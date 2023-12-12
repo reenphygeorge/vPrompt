@@ -1,0 +1,10 @@
+env
+__pycache__
+nc_data
+pg_data
+yolo
+models/license_plate_detector.pt
+models/yolov8n.pt
+sort
+video/sample.mp4
+video/sample2.mp4
