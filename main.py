@@ -32,7 +32,7 @@ coco_model = YOLO('./models/yolov8n.pt')
 license_plate_detector = YOLO('./models/license_plate_detector.pt')
 
 # load video
-cap = cv2.VideoCapture('./video/sample2.mp4')
+cap = cv2.VideoCapture('./video/sample.mp4')
 
 vehicles = [2, 3, 5, 7]
 
@@ -93,13 +93,5 @@ while ret:
                     data_to_insert = (timestamp, license_plate_text, license_plate_text_score)
                     cursor.execute(insert_data_sql,data_to_insert)
                     conn.commit()
-
-query = "SELECT * FROM footage_data"
-cursor.execute(query)
-
-# Fetch all results
-data = cursor.fetchall()
-print(data)
-
 cursor.close()
 conn.close()
