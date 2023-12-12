@@ -2,7 +2,7 @@ import openai
 import psycopg2
 
 # Set your OpenAI GPT-3 API key
-openai.api_key = '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'
+openai.api_key = '<OPENAI-API-KEY>'
 
 # Connect to the PostgreSQL database
 conn = psycopg2.connect(

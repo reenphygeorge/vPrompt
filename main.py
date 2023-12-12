@@ -18,7 +18,12 @@ confidence DOUBLE PRECISION
 insert_data_sql = """INSERT INTO footage_data (timestamp, plate_number, confidence) VALUES (%s, %s, %s)"""
 
 # Connect to your postgres DB
-conn = psycopg2.connect(host="localhost", database="db", user="user", password="pass")
+conn = psycopg2.connect(
+    host="localhost", 
+    database="db", 
+    user="user", 
+    password="pass"
+)
 
 # Open a cursor to perform database operations and create the table if it doesn't exist
 cursor = conn.cursor()
