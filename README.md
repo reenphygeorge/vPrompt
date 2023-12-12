@@ -7,25 +7,29 @@
 
 1. Setup python env
 
-       python -m venv venv
+       python -m venv env
 
-2. Install dependencies
+2. Activate the env
+
+       source env/bin/activate
+
+4. Install dependencies
 
        pip install -r requirements.txt
 
-3. Install dependencies
+5. Install dependencies
 
        pip install -r requirements.txt
 
-4. Clone [Sort](https://github.com/abewley/sort) module for object tracking
+6. Clone [Sort](https://github.com/abewley/sort) module for object tracking
 
        git clone https://github.com/abewley/sort.git
    
-5. Download the custom trained model from [here](https://drive.google.com/file/d/10sf_Jqa6vAm73v7nRVO0oNTNqZxvyS1o/view?usp=sharing) and add it to models directory.
+7. Download the custom trained model from [here](https://drive.google.com/file/d/10sf_Jqa6vAm73v7nRVO0oNTNqZxvyS1o/view?usp=sharing) and add it to models directory.
 
-6. Download the sample video from [here](https://drive.google.com/file/d/1YmHTElM6rh5uBpvaoUYpYTHK2odJkoM6/view?usp=drive_link) and add it to video directory.
+8. Download the sample video from [here](https://drive.google.com/file/d/1YmHTElM6rh5uBpvaoUYpYTHK2odJkoM6/view?usp=drive_link) and add it to video directory.
 
-7. Connect [NocoDB](https://docs.nocodb.com/data-sources/connect-to-data-source/) to view the timeseries data
+9. Connect [NocoDB](https://docs.nocodb.com/data-sources/connect-to-data-source/) to view the timeseries data
 
         http://localhost:8085
 
