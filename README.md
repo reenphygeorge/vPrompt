@@ -17,7 +17,7 @@
 
        pip install -r requirements.txt
 
-4. Clone Sort module for object tracking
+4. Clone [Sort](https://github.com/abewley/sort) module for object tracking
 
        git clone https://github.com/abewley/sort.git
    
@@ -28,5 +28,5 @@
 
 ### Train the model
 
-- Use the jupyter notebook file to train in Google Colab
+- Use this jupyter [notebook](https://github.com/reenphygeorge/vPrompt/blob/main/train/video_analytics_train.ipynb) file to train in Google Colab
 - Use this [dataset](https://universe.roboflow.com/roboflow-universe-projects/license-plate-recognition-rxg4e/dataset/4) to train
