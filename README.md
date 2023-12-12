@@ -3,7 +3,7 @@
   <b> Number Plate detect from video using yolov8 </b>
 </div>
 
-### Run an example
+### Run Detection Model
 
 1. Setup python env
 
@@ -25,6 +25,9 @@
 
 6. Download the sample video from [here](https://drive.google.com/file/d/1YmHTElM6rh5uBpvaoUYpYTHK2odJkoM6/view?usp=drive_link) and add it to video directory.
 
+7. Connect [NocoDB](https://docs.nocodb.com/data-sources/connect-to-data-source/) to view the timeseries data
+
+        http://localhost:8085
 
 ### Train the model
 
