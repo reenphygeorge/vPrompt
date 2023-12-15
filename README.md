@@ -1,6 +1,6 @@
 <div align="center">
   <h1>vPrompt</h1>
-  <b> Number Plate detect from video using yolov8 </b>
+  <b> AI based prompt searching tool for CCTV footages </b>
 </div>
 
 ### Run Detection Model
