@@ -1,4 +1,3 @@
-// DragAndDropInput.tsx
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 
@@ -21,6 +20,32 @@ const DragAndDropInput: React.FC = () => {
     const files = e.dataTransfer.files;
     // Process the dropped files (you can handle file uploads here)
     console.log(files);
+    handleFiles(files);
+  };
+
+  const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    // Process the selected files (you can handle file uploads here)
+    console.log(files);
+    handleFiles(files);
+  };
+
+  const handleFiles = (files: FileList | null) => {
+    if (!files) return;
+
+    const validVideoTypes = ["video/mp4", "video/webm", "video/ogg"];
+
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+
+      if (validVideoTypes.includes(file.type)) {
+        // File is a valid video type, you can further process or upload it
+        console.log("Valid video file:", file);
+      } else {
+        // File is not a valid video type, handle accordingly
+        console.log("Invalid file type:", file.type);
+      }
+    }
   };
 
   return (
@@ -33,7 +58,17 @@ const DragAndDropInput: React.FC = () => {
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
     >
-      <Button className="text-center bg-blue-700 w-32 mx-auto mt-40">
+      <input
+        type="file"
+        className="hidden"
+        onChange={handleFileInputChange}
+        accept="video/*"
+        id="fileInput" // Add an ID to the file input
+      />
+      <Button
+        className="text-center bg-blue-700 w-32 mx-auto mt-40"
+        onClick={() => document.getElementById("fileInput")?.click()}
+      >
         Browse
       </Button>
       <p className="m-auto">or drag and drop files here</p>
