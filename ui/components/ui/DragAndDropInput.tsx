@@ -50,7 +50,7 @@ const DragAndDropInput: React.FC = () => {
 
   return (
     <div
-      className={`border-2 border-dashed p-4 w-80 h-full mt-80 ${
+      className={`border-2 border-dashed p-4 w-80 h-full mt-40 ${
         isDragging ? "border-blue-500" : "border-gray-300"
       } flex-col flex justify-center`}
       onDragEnter={handleDragEnter}
