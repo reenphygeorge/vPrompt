@@ -50,13 +50,13 @@ export default function Home(): JSX.Element {
                 value="upload"
                 onClick={() => handleTabClick("upload")}
               >
-                upload a footage
+                upload
               </TabsTrigger>
               <TabsTrigger
                 value="real-time"
                 onClick={() => handleTabClick("real-time")}
               >
-                real-time footage
+                live
               </TabsTrigger>
             </TabsList>
           </Tabs>
