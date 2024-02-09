@@ -50,8 +50,8 @@ const DragAndDropInput: React.FC = () => {
 
   return (
     <div
-      className={`border-2 border-dashed p-4 w-80 h-full mt-40 ${
-        isDragging ? "border-blue-500" : "border-gray-300"
+      className={`border-2 border-dashed p-4 w-80 h-80 mt-40 ${
+        isDragging ? "border-blue-500" : "border-[#606060]"
       } flex-col flex justify-center`}
       onDragEnter={handleDragEnter}
       onDragOver={(e) => e.preventDefault()}
@@ -60,7 +60,7 @@ const DragAndDropInput: React.FC = () => {
     >
       <input
         type="file"
-        className="hidden"
+        className="hidden "
         onChange={handleFileInputChange}
         accept="video/*"
         id="fileInput" // Add an ID to the file input
