@@ -71,7 +71,7 @@ const DragAndDropInput: React.FC = () => {
       >
         Browse
       </Button>
-      <p className="m-auto">or drag and drop files here</p>
+      <p className="m-auto text-white">or drag and drop files here</p>
     </div>
   );
 };
