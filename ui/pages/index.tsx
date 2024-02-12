@@ -8,6 +8,9 @@ type TabType = "upload" | "real-time";
 export default function Home(): JSX.Element {
   const [activeTab, setActiveTab] = useState<TabType>("upload");
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState<boolean>(false);
+  const [backgroundImage, setBackgroundImage] = useState<string>(
+    "url('/background2.png')"
+  );
 
   const handleTabClick = (value: TabType) => {
     setActiveTab(value);
@@ -17,8 +20,15 @@ export default function Home(): JSX.Element {
     setIsSidebarCollapsed(!isSidebarCollapsed);
   };
 
+  const setBackground = (imageUrl: string) => {
+    setBackgroundImage(imageUrl);
+  };
+
   return (
-    <div className="relative flex w-screen">
+    <div
+      className="relative flex w-screen "
+      style={{ backgroundImage: backgroundImage }}
+    >
       <div
         className={`flex-none bg-customBlack ${
           isSidebarCollapsed ? "w-0" : "w-40"
@@ -48,13 +58,19 @@ export default function Home(): JSX.Element {
             <TabsList>
               <TabsTrigger
                 value="upload"
-                onClick={() => handleTabClick("upload")}
+                onClick={() => {
+                  handleTabClick("upload");
+                  setBackground("url('/background1.png')");
+                }}
               >
                 upload
               </TabsTrigger>
               <TabsTrigger
                 value="real-time"
-                onClick={() => handleTabClick("real-time")}
+                onClick={() => {
+                  handleTabClick("real-time");
+                  setBackground("url('/background2.png')");
+                }}
               >
                 live
               </TabsTrigger>
