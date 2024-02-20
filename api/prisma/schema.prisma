@@ -1,0 +1,42 @@
+generator client {
+    provider             = "prisma-client-py"
+    interface            = "asyncio"
+    recursive_type_depth = 5
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model Chat {
+    id        String    @id @unique @default(dbgenerated("(gen_random_uuid())::text"))
+    message   Message[]
+    footage   Footage?  @relation(fields: [footageId], references: [id])
+    createdAt DateTime  @default(now()) @db.Timestamp(0)
+    footageId String?
+}
+
+model Message {
+    id        String   @id @unique @default(dbgenerated("(gen_random_uuid())::text"))
+    prompt    String
+    response  String
+    createdAt DateTime @default(now()) @db.Timestamp(0)
+    chat      Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
+    chatId    String
+}
+
+model Footage {
+    id             String      @id @unique @default(dbgenerated("(gen_random_uuid())::text"))
+    filename       String
+    chat           Chat[]
+    timeSeriesData VideoData[]
+}
+
+model VideoData {
+    id          String  @id @unique @default(dbgenerated("(gen_random_uuid())::text"))
+    timestamp   String
+    plateNumber String
+    footage     Footage @relation(fields: [footageId], references: [id])
+    footageId   String
+}

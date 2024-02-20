@@ -11,10 +11,3 @@ services:
       - "5432:5432"
     volumes:
       - ./pg_data:/var/lib/postgresql/data
-  nocodb:
-    image: "nocodb/nocodb:latest"
-    ports:
-      - "8085:8080"
-    restart: always
-    volumes:
-      - "./nc_data:/usr/app/data"
