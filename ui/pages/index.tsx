@@ -60,7 +60,7 @@ export default function Home(): JSX.Element {
                 value="upload"
                 onClick={() => {
                   handleTabClick("upload");
-                  setBackground("url('/background1.png')");
+                  //setBackground("url('/background1.png')");
                 }}
               >
                 upload
@@ -69,7 +69,7 @@ export default function Home(): JSX.Element {
                 value="real-time"
                 onClick={() => {
                   handleTabClick("real-time");
-                  setBackground("url('/background2.png')");
+                  //setBackground("url('/background2.png')");
                 }}
               >
                 live
