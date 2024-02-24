@@ -1,9 +1,6 @@
 env
 __pycache__
 pg_data
-yolo
-sort
 api/core/models/*
 !api/core/models/.gitkeep
-api/core/video/*
-!api/core/video/.gitkeep
+api/core/videos/*

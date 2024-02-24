@@ -22,12 +22,12 @@ async def model_service(file: UploadFile, chatId: str):
         return JSONResponse(status_code=400, content=result)
     else:
         result = await update_db(file.filename, chatId)
-        await run_model(file.filename,result.id)
+        await run_model(file.filename, result.id)
         return {"success": True}
 
 
 def upload_footage(file: UploadFile):
-    UPLOAD_DIR = "./core/video/"
+    UPLOAD_DIR = "./core/videos/"
     # Ensure the upload directory exists
     os.makedirs(UPLOAD_DIR, exist_ok=True)
     # Check if the uploaded file is an MP4 video
@@ -47,9 +47,11 @@ def upload_footage(file: UploadFile):
 async def update_db(filename: str, chatId: str):
     db = Prisma()
     await db.connect()
-    return await db.footage.create(
+    result = await db.footage.create(
         {
             "filename": filename,
             "chat": {"connect": {"id": chatId}},
         }
     )
+    await db.disconnect()
+    return result

@@ -1,0 +1,4 @@
+env
+__pycache__
+pg_data
+api/core/video/*

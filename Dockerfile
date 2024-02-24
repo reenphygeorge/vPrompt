@@ -4,13 +4,11 @@ ENV PYTHONDONTWRITEBYTECODE 1
 
 WORKDIR /app
 
-COPY . /app
-
-RUN apt-get update && apt-get install -y git
-
-RUN git clone https://github.com/abewley/sort.git
+COPY ./api /app
 
 RUN pip install --no-cache-dir -r requirements.txt
+
+RUN prisma generate
 
 EXPOSE 8000
 
