@@ -1,6 +1,6 @@
 from prisma import Prisma
 from pydantic import BaseModel
-
+from fastapi.responses import JSONResponse
 
 class CreateMessage(BaseModel):
     chatId: str

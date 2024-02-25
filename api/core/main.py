@@ -10,10 +10,6 @@ async def run_model(filename, footage_id):
     await db.connect()
 
     assert cap.isOpened(), "Error reading video file"
-    w, h, fps = (
-        int(cap.get(x))
-        for x in (cv2.CAP_PROP_FRAME_WIDTH, cv2.CAP_PROP_FRAME_HEIGHT, cv2.CAP_PROP_FPS)
-    )
 
     skip_frame = False
 
