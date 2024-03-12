@@ -54,4 +54,10 @@ async def detect(frame, timestamp, footage_id, db):
 
                     plate_number, score = read_license_plate(plate_frame)
                     if (plate_number != None or score != None) and (score >= 0.35):
-                        await update_footage(db, timestamp, plate_number, footage_id)
+                        await update_footage(
+                            db,
+                            timestamp,
+                            plate_number,
+                            footage_id,
+                            names[int(vehicle_cls)],
+                        )

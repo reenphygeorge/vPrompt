@@ -37,6 +37,7 @@ model VideoData {
     id          String  @id @unique @default(dbgenerated("(gen_random_uuid())::text"))
     timestamp   String
     plateNumber String
+    vehicleType String
     footage     Footage @relation(fields: [footageId], references: [id])
     footageId   String
 }
