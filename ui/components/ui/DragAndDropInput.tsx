@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Button } from "@/components/ui/button";
+import { VideoContext } from "@/context/VideoContext";
 
 const DragAndDropInput: React.FC = () => {
   const [isDragging, setIsDragging] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const { isProcessed, setIsProcessed } = useContext(VideoContext);
 
   const handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -32,6 +34,7 @@ const DragAndDropInput: React.FC = () => {
 
     setTimeout(() => {
       setIsLoading(false);
+      setIsProcessed(true);
     }, 3000);
   };
 
@@ -42,6 +45,7 @@ const DragAndDropInput: React.FC = () => {
 
     setTimeout(() => {
       setIsLoading(false);
+      setIsProcessed(true);
     }, 3000);
   };
 
