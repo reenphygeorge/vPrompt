@@ -3,7 +3,7 @@ from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 import shutil
 import os
-from services.footage import model_service
+from services.footage.upload import model_service
 
 app = APIRouter()
 

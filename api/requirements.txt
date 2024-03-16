@@ -6,3 +6,7 @@ python-multipart
 opencv-python
 ultralytics
 easyocr
+langchain_together
+kor
+langchain_community
+moviepy
