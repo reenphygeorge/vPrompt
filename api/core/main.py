@@ -4,7 +4,7 @@ from core.licence_plate.detect import detect
 
 
 async def run_model(filename, footage_id):
-    cap = cv2.VideoCapture("./core/videos/" + filename)
+    cap = cv2.VideoCapture("./core/videos/uploads/" + filename)
     db = Prisma()
 
     await db.connect()
@@ -16,9 +16,10 @@ async def run_model(filename, footage_id):
     while cap.isOpened():
         success, frame = cap.read()
         if not success:
-            print(
-                "Video frame is empty or video processing has been successfully completed."
-            )
+            # todo: log
+            # print(
+            #     "Video frame is empty or video processing has been successfully completed."
+            # )
             break
 
         if skip_frame:

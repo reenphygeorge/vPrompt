@@ -56,13 +56,16 @@ async def delete_chat(id: str = Form(...)):
 @app.post("/message")
 async def new_message(data: CreateMessage):
     try:
-        response, filename = await create_new_message(data)
+        response = await create_new_message(data)
+        if response["success"] == False:
+            return JSONResponse(status_code=400, content=response)
         return FileResponse(
-            "./core/videos/" + filename,
+            "./core/videos/trimmed/" + response["data"][0],
+            # media_type="video/mp4",
             media_type="application/octet-stream",
-            filename=filename,
         )
     except Exception as e:
+        print(e)
         return JSONResponse(
             status_code=500,
             content={"success": False, "message": "Something Went Wrong!"},

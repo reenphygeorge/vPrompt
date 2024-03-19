@@ -3,7 +3,6 @@ async def update_footage(db, timestamp, plate_number, footage_id, vehicle_type):
         where={
             "timestamp": timestamp,
             "plateNumber": plate_number,
-            "vehicleType": vehicle_type,
             "footageId": footage_id,
         }
     )

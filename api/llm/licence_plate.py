@@ -2,6 +2,11 @@ from langchain_together import Together
 from kor.extraction import create_extraction_chain
 from kor.nodes import Object, Text, Number
 from langchain_community.chat_models import ChatOpenAI
+from dotenv import load_dotenv
+from os import environ
+
+load_dotenv()
+TOGETHER_API_KEY = environ["TOGETHER_API_KEY"]
 
 schema = Object(
     id="vehicle",
@@ -95,7 +100,7 @@ llm = Together(
     temperature=0.7,
     max_tokens=128,
     top_k=1,
-    together_api_key="08c120887806e6ff4fcfc3516b208d9cf1e241008a6c95ba30940b0b1884a250",
+    together_api_key=TOGETHER_API_KEY,
 )
 
 

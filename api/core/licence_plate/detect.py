@@ -3,16 +3,16 @@ from ultralytics.utils.plotting import Annotator, colors
 import cv2
 
 from core.licence_plate.ocr import read_license_plate
-from core.licence_plate.db import update_footage
+from services.footage.videodata import update_footage
 
-model = YOLO("./core/models/yolov8n.pt")
+coco = YOLO("./core/models/yolov8n.pt")
 license_plate = YOLO("./core/models/license_plate_detector.pt")
 
-names = model.names
+names = coco.names
 
 
 def detect_vehicles(frame):
-    results = model(frame, show=False)
+    results = coco(frame, show=False)
     boxes = results[0].boxes.xyxy.cpu().tolist()
     clss = results[0].boxes.cls.cpu().tolist()
     annotator = Annotator(frame, line_width=2, example=names)
@@ -54,6 +54,7 @@ async def detect(frame, timestamp, footage_id, db):
 
                     plate_number, score = read_license_plate(plate_frame)
                     if (plate_number != None or score != None) and (score >= 0.35):
+                        print(vehicle_box)
                         await update_footage(
                             db,
                             timestamp,

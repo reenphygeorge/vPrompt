@@ -20,7 +20,7 @@ model Chat {
 model Message {
     id        String   @id @unique @default(dbgenerated("(gen_random_uuid())::text"))
     prompt    String
-    response  String[]
+    response  Json[]
     createdAt DateTime @default(now()) @db.Timestamp(0)
     chat      Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
     chatId    String
@@ -30,7 +30,7 @@ model Footage {
     id             String      @id @unique @default(dbgenerated("(gen_random_uuid())::text"))
     filename       String
     chat           Chat[]
-    timeSeriesData VideoData[]
+    videoData VideoData[]
 }
 
 model VideoData {
