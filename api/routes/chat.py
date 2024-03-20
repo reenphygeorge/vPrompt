@@ -1,3 +1,4 @@
+import logging
 from fastapi import APIRouter, Form
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
@@ -25,6 +26,7 @@ async def get_chat(id: str = None):
         else:
             return await get_all_chats()
     except Exception as e:
+        logging.exception(e)
         return JSONResponse(
             status_code=500,
             content={"success": False, "message": "Something Went Wrong!"},
@@ -36,6 +38,7 @@ async def create_chat():
     try:
         return await create_new_chat()
     except Exception as e:
+        logging.exception(e)
         return JSONResponse(
             status_code=500,
             content={"success": False, "message": "Something Went Wrong!"},
@@ -47,6 +50,7 @@ async def delete_chat(id: str = Form(...)):
     try:
         return await delete_chat_by_id(id)
     except Exception as e:
+        logging.exception(e)
         return JSONResponse(
             status_code=500,
             content={"success": False, "message": "Something Went Wrong!"},
@@ -61,7 +65,7 @@ async def new_message(data: CreateMessage):
             return JSONResponse(status_code=400, content=response)
         return {"success": True, "content": response["data"]}
     except Exception as e:
-        print(e)
+        logging.exception(e)
         return JSONResponse(
             status_code=500,
             content={"success": False, "message": "Something Went Wrong!"},

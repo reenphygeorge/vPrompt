@@ -16,10 +16,6 @@ async def run_model(filename, footage_id):
     while cap.isOpened():
         success, frame = cap.read()
         if not success:
-            # todo: log
-            # print(
-            #     "Video frame is empty or video processing has been successfully completed."
-            # )
             break
 
         if skip_frame:
