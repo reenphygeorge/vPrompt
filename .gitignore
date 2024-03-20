@@ -1,0 +1,11 @@
+env
+.env
+__pycache__
+pg_data
+redis_data
+api/core/models/*
+api/core/videos/trimmed/*
+api/core/videos/uploads/*
+!api/core/models/.gitkeep
+!api/core/videos/uploads/.gitkeep
+!api/core/videos/trimmed/.gitkeep

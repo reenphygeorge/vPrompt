@@ -1,4 +1,4 @@
-from json import dumps
+from json import dumps, loads
 from os import path
 from prisma import Prisma
 from pydantic import BaseModel
@@ -8,6 +8,7 @@ from services.footage.videodata import search_footage
 from utils.list import no_repeat_list
 from utils.video_fetcher import video_trimmer
 from services.footage.get_footage import get_footage
+from utils.cache import add_cache, get_cache
 
 
 class CreateMessage(BaseModel):
@@ -29,6 +30,18 @@ async def get_chat_by_id(chatId: str):
     db = Prisma()
     await db.connect()
     result = await db.chat.find_unique(where={"id": chatId}, include={"message": True})
+    await db.disconnect()
+    if result:
+        return {"success": True, "data": result}
+    return {"success": False, "data": result}
+
+
+async def get_chat_info(chatId: str):
+    db = Prisma()
+    await db.connect()
+    result = await db.chat.find_first(
+        where={"id": chatId}, include={"message": False, "footage": True}
+    )
     await db.disconnect()
     if result:
         return {"success": True, "data": result}
@@ -60,13 +73,16 @@ async def delete_chat_by_id(chatId: str):
 async def create_new_message(data: CreateMessage):
     db = Prisma()
     await db.connect()
-    result = await get_chat_by_id(data.chatId)
+
+    result = await get_chat_info(data.chatId)
+    footage_id = result["data"].footage.id
+    filename = result["data"].footage.filename
+
     if result["success"] == False:
         return {"success": False, "message": "Invalid Chat"}
 
-    footage_id = result["data"].footageId
     try:
-        extracted_datas = extract_prompt_data(data.prompt)
+        extracted_plate_numbers = extract_prompt_data(data.prompt)
     except Exception as e:
         return {"success": False, "message": "No plate numbers found"}
 
@@ -74,11 +90,20 @@ async def create_new_message(data: CreateMessage):
     json_response = []
     trim_filenames = []
 
-    for extracted_data in extracted_datas:
-        search_datas = await search_footage(db, extracted_data, footage_id)
-        search_datas.sort(key=lambda videodata: videodata.timestamp, reverse=False)
+    for plate_number in extracted_plate_numbers:
+        output_filename = f"{plate_number}_{filename}"
+        file_path = f"./core/videos/trimmed/{output_filename}"
 
-        footage_data = await get_footage(footage_id)
+        # Check in redis
+        cache_data = get_cache(output_filename)
+        if cache_data != None:
+            response.append(loads(cache_data))
+            json_response.append(cache_data.decode("utf-8"))
+            continue
+
+        # Fetch from db and add to redis
+        search_datas = await search_footage(db, plate_number, footage_id)
+        search_datas.sort(key=lambda videodata: videodata.timestamp, reverse=False)
 
         if len(search_datas) == 0:
             return {"success": False, "message": "No vehicle data found"}
@@ -90,36 +115,25 @@ async def create_new_message(data: CreateMessage):
 
         timestamps = no_repeat_list(timestamps)
 
-        output_filename = f"{extracted_data}_{footage_data.filename}"
-        file_path = f"./core/videos/trimmed/{output_filename}"
-
         # No re-trimming if trimmed video already present
         if path.exists(file_path) == False:
-            output_filename = video_trimmer(
-                timestamps, footage_data.filename, extracted_data
-            )
+            output_filename = video_trimmer(timestamps, filename, plate_number)
 
         url = f"http://localhost:8000/static/{output_filename}"
 
         trim_filenames.append(output_filename)
 
-        response.append(
-            {
-                "plate_number": extracted_data,
-                "timestamps": timestamps,
-                "url": url,
-            }
-        )
+        response_data = {
+            "plate_number": plate_number,
+            "timestamps": timestamps,
+            "url": url,
+        }
 
-        json_response.append(
-            dumps(
-                {
-                    "plate_number": extracted_data,
-                    "timestamps": timestamps,
-                    "url": url,
-                }
-            )
-        )
+        add_cache(output_filename, response_data, True)
+
+        response.append(response_data)
+
+        json_response.append(dumps(response_data))
 
     await db.message.create(
         {
