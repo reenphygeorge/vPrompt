@@ -10,3 +10,4 @@ langchain_together
 kor
 langchain_community
 moviepy
+redis
