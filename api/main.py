@@ -1,8 +1,10 @@
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
 from routes import chat, footage
 
 app = FastAPI()
 
+app.mount("/static", StaticFiles(directory="./core/videos/trimmed"), name="static")
 
 @app.get("/")
 def read_root():

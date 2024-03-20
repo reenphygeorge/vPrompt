@@ -71,6 +71,7 @@ async def create_new_message(data: CreateMessage):
         return {"success": False, "message": "No plate numbers found"}
 
     response = []
+    json_response = []
     trim_filenames = []
 
     for extracted_data in extracted_datas:
@@ -89,10 +90,6 @@ async def create_new_message(data: CreateMessage):
 
         timestamps = no_repeat_list(timestamps)
 
-        response.append(
-            dumps({"plate_number": extracted_data, "timestamps": timestamps})
-        )
-
         output_filename = f"{extracted_data}_{footage_data.filename}"
         file_path = f"./core/videos/trimmed/{output_filename}"
 
@@ -101,14 +98,35 @@ async def create_new_message(data: CreateMessage):
             output_filename = video_trimmer(
                 timestamps, footage_data.filename, extracted_data
             )
+
+        url = f"http://localhost:8000/static/{output_filename}"
+
         trim_filenames.append(output_filename)
+
+        response.append(
+            {
+                "plate_number": extracted_data,
+                "timestamps": timestamps,
+                "url": url,
+            }
+        )
+
+        json_response.append(
+            dumps(
+                {
+                    "plate_number": extracted_data,
+                    "timestamps": timestamps,
+                    "url": url,
+                }
+            )
+        )
 
     await db.message.create(
         {
             "prompt": data.prompt,
-            "response": response,
+            "response": json_response,
             "chat": {"connect": {"id": data.chatId}},
         }
     )
     await db.disconnect()
-    return {"success": True, "data": trim_filenames}
+    return {"success": True, "data": response}

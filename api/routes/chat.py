@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Form
-from fastapi.responses import JSONResponse, FileResponse
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from services.chat import (
     get_all_chats,
@@ -59,11 +59,7 @@ async def new_message(data: CreateMessage):
         response = await create_new_message(data)
         if response["success"] == False:
             return JSONResponse(status_code=400, content=response)
-        return FileResponse(
-            "./core/videos/trimmed/" + response["data"][0],
-            # media_type="video/mp4",
-            media_type="application/octet-stream",
-        )
+        return {"success": True, "content": response["data"]}
     except Exception as e:
         print(e)
         return JSONResponse(
