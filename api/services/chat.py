@@ -1,5 +1,5 @@
 from json import dumps, loads
-from os import path
+from os import path, makedirs
 from prisma import Prisma
 from pydantic import BaseModel
 from fastapi.responses import JSONResponse
@@ -9,6 +9,7 @@ from utils.list import no_repeat_list
 from utils.video_fetcher import video_trimmer
 from services.footage.get_footage import get_footage
 from utils.cache import add_cache, get_cache
+from services.footage.delete import delete_footage
 
 
 class CreateMessage(BaseModel):
@@ -57,13 +58,14 @@ async def create_new_chat():
     return data
 
 
-async def delete_chat_by_id(chatId: str):
+async def delete_chat_by_id(chat_id: str):
     db = Prisma()
     await db.connect()
-    result = await get_chat_by_id(chatId)
+    result = await get_chat_by_id(chat_id)
     if result["success"]:
-        result = await db.chat.delete(where={"id": chatId})
-        return {"success": True, "data": result, "message": "Chat Deleted"}
+        chat_result = await db.chat.delete(where={"id": chat_id})
+        await delete_footage(chat_result.footageId)
+        return {"success": True, "data": chat_result, "message": "Chat Deleted"}
     await db.disconnect()
     return JSONResponse(
         status_code=400, content={"success": False, "message": "Invalid Chat"}
@@ -92,11 +94,16 @@ async def create_new_message(data: CreateMessage):
 
     for plate_number in extracted_plate_numbers:
         output_filename = f"{plate_number}_{filename}"
-        file_path = f"./core/videos/trimmed/{output_filename}"
+        dir_path = f"./core/videos/trimmed/{footage_id}"
 
+        # Create footage directory if not exist
+        if path.exists(dir_path) == False:
+            makedirs(dir_path)
+
+        file_path = f"{dir_path}/{output_filename}"
         # Check in redis
         cache_data = get_cache(output_filename)
-        if cache_data != None:
+        if cache_data != None and path.exists(file_path) == True:
             response.append(loads(cache_data))
             json_response.append(cache_data.decode("utf-8"))
             continue
@@ -117,9 +124,11 @@ async def create_new_message(data: CreateMessage):
 
         # No re-trimming if trimmed video already present
         if path.exists(file_path) == False:
-            output_filename = video_trimmer(timestamps, filename, plate_number)
+            output_filename = video_trimmer(
+                timestamps, filename, plate_number, footage_id
+            )
 
-        url = f"http://localhost:8000/static/{output_filename}"
+        url = f"http://localhost:8000/videos/{footage_id}/{output_filename}"
 
         trim_filenames.append(output_filename)
 

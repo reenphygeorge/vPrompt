@@ -27,9 +27,9 @@ model Message {
 }
 
 model Footage {
-    id             String      @id @unique @default(dbgenerated("(gen_random_uuid())::text"))
-    filename       String
-    chat           Chat[]
+    id        String      @id @unique @default(dbgenerated("(gen_random_uuid())::text"))
+    filename  String
+    chat      Chat[]
     videoData VideoData[]
 }
 
@@ -38,6 +38,6 @@ model VideoData {
     timestamp   String
     plateNumber String
     vehicleType String
-    footage     Footage @relation(fields: [footageId], references: [id])
+    footage     Footage @relation(fields: [footageId], references: [id], onDelete: Cascade)
     footageId   String
 }

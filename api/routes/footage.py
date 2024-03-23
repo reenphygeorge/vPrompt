@@ -5,6 +5,7 @@ from fastapi import APIRouter, File, UploadFile, Form, HTTPException
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from services.footage.upload import model_service
+from services.chat import get_chat_info
 
 app = APIRouter()
 

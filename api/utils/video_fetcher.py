@@ -1,7 +1,7 @@
 from moviepy.editor import VideoFileClip
 
 
-def video_trimmer(timestamps, filename, plate_number):
+def video_trimmer(timestamps, filename, plate_number, footage_id):
     video_path = "./core/videos/uploads/" + filename
     start_time = (
         float(timestamps[0].split(":")[0]) * 3600
@@ -23,7 +23,9 @@ def video_trimmer(timestamps, filename, plate_number):
 
     output_filename = f"{plate_number}_{filename}"
 
-    trimmed_clip.write_videofile("./core/videos/trimmed/" + output_filename)
+    trimmed_clip.write_videofile(
+        f"./core/videos/trimmed/{footage_id}/{output_filename}"
+    )
 
     clip.close()
 
