@@ -1,5 +1,5 @@
 from json import dumps, loads
-from os import path, makedirs
+from os import path, makedirs, environ
 from prisma import Prisma
 from pydantic import BaseModel
 from fastapi.responses import JSONResponse
@@ -7,9 +7,12 @@ from llm.licence_plate import extract_prompt_data
 from services.footage.videodata import search_footage
 from utils.list import no_repeat_list
 from utils.video_fetcher import video_trimmer
-from services.footage.get_footage import get_footage
 from utils.cache import add_cache, get_cache
 from services.footage.delete import delete_footage
+from dotenv import load_dotenv
+
+load_dotenv()
+api_host_url = environ["API_HOST_URL"]
 
 
 class CreateMessage(BaseModel):
@@ -17,20 +20,22 @@ class CreateMessage(BaseModel):
     prompt: str
 
 
-async def get_all_chats():
+async def get_all_chats(page: int, limit: int):
     db = Prisma()
     await db.connect()
-    result = await db.chat.find_many()
+    result = await db.chat.find_many(skip=(page - 1) * limit, take=limit)
     result.sort(key=lambda user: user.createdAt, reverse=True)
     await db.disconnect()
     data = {"success": True, "data": result}
     return data
 
 
-async def get_chat_by_id(chatId: str):
+async def get_chat_by_id(chatId: str, page: int, limit: int):
     db = Prisma()
     await db.connect()
-    result = await db.chat.find_unique(where={"id": chatId}, include={"message": True})
+    result = await db.message.find_many(
+        where={"chatId": chatId}, skip=(page - 1) * limit, take=limit
+    )
     await db.disconnect()
     if result:
         return {"success": True, "data": result}
@@ -76,12 +81,14 @@ async def create_new_message(data: CreateMessage):
     db = Prisma()
     await db.connect()
 
+    # Checking if chat is valid
     result = await get_chat_info(data.chatId)
-    footage_id = result["data"].footage.id
-    filename = result["data"].footage.filename
 
     if result["success"] == False:
         return {"success": False, "message": "Invalid Chat"}
+
+    footage_id = result["data"].footage.id
+    filename = result["data"].footage.filename
 
     try:
         extracted_plate_numbers = extract_prompt_data(data.prompt)
@@ -128,7 +135,7 @@ async def create_new_message(data: CreateMessage):
                 timestamps, filename, plate_number, footage_id
             )
 
-        url = f"http://localhost:8000/videos/{footage_id}/{output_filename}"
+        url = f"{api_host_url}/videos/{footage_id}/{output_filename}"
 
         trim_filenames.append(output_filename)
 

@@ -4,7 +4,7 @@ from prisma import Prisma
 from pydantic import BaseModel
 import shutil
 import os
-from services.chat import get_chat_by_id
+from services.chat import get_chat_info
 from core.main import run_model
 
 
@@ -14,7 +14,7 @@ async def model_service(file: UploadFile, chat_id: str):
     await db.connect()
 
     # Checking if chat is valid
-    result = await get_chat_by_id(chat_id)
+    result = await get_chat_info(chat_id)
     await db.disconnect()
     if result["success"] == False:
         return JSONResponse(

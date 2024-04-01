@@ -1,4 +1,4 @@
-import logging
+from logging import basicConfig
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from routes import chat, footage
@@ -6,8 +6,8 @@ from routes import chat, footage
 app = FastAPI()
 
 # Init Logger
-logging.basicConfig(
-    filename="error.log",
+basicConfig(
+    filename="./log/error.log",
     filemode="w",
     format="[%(asctime)s] - %(name)s - %(levelname)s - %(message)s",
 )
@@ -19,5 +19,6 @@ def read_root():
 
 
 app.mount("/videos", StaticFiles(directory="./core/videos/trimmed"), name="videos")
+app.mount("/logs", StaticFiles(directory="./log"), name="logs")
 app.include_router(chat.app, prefix="/api/chat", tags=["chat"])
 app.include_router(footage.app, prefix="/api/footage", tags=["footage"])

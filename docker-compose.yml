@@ -3,12 +3,14 @@ services:
   db:
     image: postgres:latest
     container_name: vprompt-postgres
+    env_file:
+      - .env
     environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: pass
-      POSTGRES_DB: db
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     ports:
-      - "5433:5432"
+      - "${POSTGRES_PORT}:5432"
     volumes:
       - ./pg_data:/var/lib/postgresql/data
   # api:
@@ -23,7 +25,14 @@ services:
   redis:
     image: redis
     ports:
-      - "6379:6379"
+      - "${REDIS_PORT}:6379"
     volumes:
       - ./redis_data:/data
     restart: always
+  nocodb:
+    image: "nocodb/nocodb:latest"
+    ports:
+      - "8080:8080"
+    restart: always
+    volumes:
+      - "./nc_data:/usr/app/data"

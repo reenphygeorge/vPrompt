@@ -1,8 +1,17 @@
 from redis import Redis
 from json import dumps
+from dotenv import load_dotenv
+from os import environ
 
-redis_client = Redis(host="localhost", port=6379, db=0)
+load_dotenv()
+redis_host = environ["REDIS_HOST"]
+redis_port = environ["REDIS_PORT"]
 
+redis_client = Redis(
+    host=redis_host,
+    port=redis_port,
+    db=0,
+)
 
 def add_cache(key: str, data, json: bool):
     if json:
