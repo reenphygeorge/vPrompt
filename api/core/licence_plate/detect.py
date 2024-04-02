@@ -12,7 +12,7 @@ names = coco.names
 
 
 def detect_vehicles(frame):
-    results = coco(frame, show=False, verbose=True)
+    results = coco(frame, show=False, verbose=False)
     boxes = results[0].boxes.xyxy.cpu().tolist()
     clss = results[0].boxes.cls.cpu().tolist()
     annotator = Annotator(frame, line_width=2, example=names)
@@ -20,7 +20,7 @@ def detect_vehicles(frame):
 
 
 def detect_plate(vehicle_frame):
-    results = license_plate.predict(vehicle_frame, show=False, verbose=True)
+    results = license_plate.predict(vehicle_frame, show=False, verbose=False)
     boxes = results[0].boxes.xyxy.cpu().tolist()
     clss = results[0].boxes.cls.cpu().tolist()
     return boxes, clss

@@ -120,7 +120,13 @@ async def create_new_message(data: CreateMessage):
         search_datas.sort(key=lambda videodata: videodata.timestamp, reverse=False)
 
         if len(search_datas) == 0:
-            return {"success": False, "message": "No vehicle data found"}
+            response_data = {
+                "plate_number": plate_number,
+                "message": "No vehicle data found",
+            }
+            response.append(response_data)
+            json_response.append(dumps(response_data))
+            continue
 
         timestamps = []
 
