@@ -10,34 +10,34 @@ datasource db {
 }
 
 model Chat {
-    id        String    @id @unique @default(dbgenerated("(gen_random_uuid())::text"))
-    message   Message[]
-    footage   Footage?  @relation(fields: [footageId], references: [id])
-    createdAt DateTime  @default(now()) @db.Timestamp(0)
-    footageId String?
+    id         String    @id @unique @default(dbgenerated("(gen_random_uuid())::text"))
+    message    Message[]
+    footage    Footage?  @relation(fields: [footage_id], references: [id])
+    created_at DateTime  @default(now()) @db.Timestamp(0)
+    footage_id String?
 }
 
 model Message {
-    id        String   @id @unique @default(dbgenerated("(gen_random_uuid())::text"))
-    prompt    String
-    response  Json[]
-    createdAt DateTime @default(now()) @db.Timestamp(0)
-    chat      Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
-    chatId    String
+    id         String   @id @unique @default(dbgenerated("(gen_random_uuid())::text"))
+    prompt     String
+    response   Json[]
+    created_at DateTime @default(now()) @db.Timestamp(0)
+    chat       Chat     @relation(fields: [chat_id], references: [id], onDelete: Cascade)
+    chat_id    String
 }
 
 model Footage {
-    id        String      @id @unique @default(dbgenerated("(gen_random_uuid())::text"))
-    filename  String
-    chat      Chat[]
-    videoData VideoData[]
+    id         String      @id @unique @default(dbgenerated("(gen_random_uuid())::text"))
+    filename   String
+    chat       Chat[]
+    video_data VideoData[]
 }
 
 model VideoData {
-    id          String  @id @unique @default(dbgenerated("(gen_random_uuid())::text"))
-    timestamp   String
-    plateNumber String
-    vehicleType String
-    footage     Footage @relation(fields: [footageId], references: [id], onDelete: Cascade)
-    footageId   String
+    id         String  @id @unique @default(dbgenerated("(gen_random_uuid())::text"))
+    timestamp  String
+    text_data  String
+    class_name String
+    footage    Footage @relation(fields: [footage_id], references: [id], onDelete: Cascade)
+    footage_id String
 }

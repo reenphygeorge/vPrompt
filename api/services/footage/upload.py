@@ -1,10 +1,9 @@
-from fastapi import APIRouter, File, UploadFile, Form, HTTPException
+from fastapi import UploadFile
 from fastapi.responses import JSONResponse
 from prisma import Prisma
-from pydantic import BaseModel
-import shutil
-import os
+from shutil import copyfileobj
 from services.chat import get_chat_info
+from os import makedirs, path
 from core.main import run_model
 
 
@@ -33,20 +32,20 @@ async def model_service(file: UploadFile, chat_id: str):
 def upload_footage(file: UploadFile):
     UPLOAD_DIR = "./core/videos/uploads"
     # Ensure the upload directory exists
-    os.makedirs(UPLOAD_DIR, exist_ok=True)
+    makedirs(UPLOAD_DIR, exist_ok=True)
     # Check if the uploaded file is an MP4 video
     if not file.filename.endswith(".mp4"):
         return {"success": False, "message": "File Not Supported"}
 
     # Save the uploaded file to the server
-    file_path = os.path.join(UPLOAD_DIR, file.filename)
+    file_path = path.join(UPLOAD_DIR, file.filename)
 
     # To avoid file overwrite
-    if os.path.exists(file_path):
+    if path.exists(file_path):
         return {"success": False, "message": "Change file name"}
 
     with open(file_path, "wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
+        copyfileobj(file.file, buffer)
 
     # Return the file name and additional metadata
     return {"success": True, "message": "Upload Success"}

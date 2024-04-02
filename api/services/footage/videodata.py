@@ -1,9 +1,9 @@
-async def update_footage(db, timestamp, plate_number, footage_id, vehicle_type):
+async def update_footage(db, timestamp, text_data, footage_id, class_name):
     video_data_result = await db.videodata.find_many(
         where={
             "timestamp": timestamp,
-            "plateNumber": plate_number,
-            "footageId": footage_id,
+            "text_data": text_data,
+            "footage_id": footage_id,
         }
     )
 
@@ -11,8 +11,8 @@ async def update_footage(db, timestamp, plate_number, footage_id, vehicle_type):
         await db.videodata.create(
             {
                 "timestamp": timestamp,
-                "plateNumber": plate_number,
-                "vehicleType": vehicle_type,
+                "text_data": text_data,
+                "class_name": class_name,
                 "footage": {"connect": {"id": footage_id}},
             }
         )
@@ -21,7 +21,7 @@ async def update_footage(db, timestamp, plate_number, footage_id, vehicle_type):
 async def search_footage(db, plate_number, footage_id):
     return await db.videodata.find_many(
         where={
-            "plateNumber": plate_number,
-            "footageId": footage_id,
+            "text_data": plate_number,
+            "footage_id": footage_id,
         }
     )

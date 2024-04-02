@@ -10,10 +10,11 @@ api_host_url = environ["API_HOST_URL"]
 
 app = APIRouter()
 
+
 @app.post("/upload")
-async def model_execute(file: UploadFile = File(...), chatId: str = Form(...)):
+async def model_execute(file: UploadFile = File(...), chat_id: str = Form(...)):
     try:
-        return await model_service(file, chatId)
+        return await model_service(file, chat_id)
     except Exception as e:
         # Delete video file if processing failed, to allow retry with same file
         UPLOAD_DIR = "./core/videos/uploads"

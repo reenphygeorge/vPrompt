@@ -16,7 +16,7 @@ api_host_url = environ["API_HOST_URL"]
 
 
 class CreateMessage(BaseModel):
-    chatId: str
+    chat_id: str
     prompt: str
 
 
@@ -24,17 +24,17 @@ async def get_all_chats(page: int, limit: int):
     db = Prisma()
     await db.connect()
     result = await db.chat.find_many(skip=(page - 1) * limit, take=limit)
-    result.sort(key=lambda user: user.createdAt, reverse=True)
+    result.sort(key=lambda user: user.created_at, reverse=True)
     await db.disconnect()
     data = {"success": True, "data": result}
     return data
 
 
-async def get_chat_by_id(chatId: str, page: int, limit: int):
+async def get_chat_by_id(chat_id: str, page: int, limit: int):
     db = Prisma()
     await db.connect()
     result = await db.message.find_many(
-        where={"chatId": chatId}, skip=(page - 1) * limit, take=limit
+        where={"chat_id": chat_id}, skip=(page - 1) * limit, take=limit
     )
     await db.disconnect()
     if result:
@@ -42,11 +42,11 @@ async def get_chat_by_id(chatId: str, page: int, limit: int):
     return {"success": False, "data": result}
 
 
-async def get_chat_info(chatId: str):
+async def get_chat_info(chat_id: str):
     db = Prisma()
     await db.connect()
     result = await db.chat.find_first(
-        where={"id": chatId}, include={"message": False, "footage": True}
+        where={"id": chat_id}, include={"message": False, "footage": True}
     )
     await db.disconnect()
     if result:
@@ -66,10 +66,10 @@ async def create_new_chat():
 async def delete_chat_by_id(chat_id: str):
     db = Prisma()
     await db.connect()
-    result = await get_chat_by_id(chat_id)
+    result = await get_chat_info(chat_id)
     if result["success"]:
         chat_result = await db.chat.delete(where={"id": chat_id})
-        await delete_footage(chat_result.footageId)
+        await delete_footage(chat_result.footage_id)
         return {"success": True, "data": chat_result, "message": "Chat Deleted"}
     await db.disconnect()
     return JSONResponse(
@@ -82,7 +82,7 @@ async def create_new_message(data: CreateMessage):
     await db.connect()
 
     # Checking if chat is valid
-    result = await get_chat_info(data.chatId)
+    result = await get_chat_info(data.chat_id)
 
     if result["success"] == False:
         return {"success": False, "message": "Invalid Chat"}
@@ -155,7 +155,7 @@ async def create_new_message(data: CreateMessage):
         {
             "prompt": data.prompt,
             "response": json_response,
-            "chat": {"connect": {"id": data.chatId}},
+            "chat": {"connect": {"id": data.chat_id}},
         }
     )
     await db.disconnect()

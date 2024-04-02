@@ -19,7 +19,7 @@ app = APIRouter()
 
 
 class CreateMessage(BaseModel):
-    chatId: str
+    chat_id: str
     prompt: str
 
 

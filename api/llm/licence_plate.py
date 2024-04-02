@@ -6,14 +6,14 @@ from dotenv import load_dotenv
 from os import environ
 
 load_dotenv()
-TOGETHER_API_KEY = environ["TOGETHER_API_KEY"]
+together_api_key = environ["TOGETHER_API_KEY"]
 
 schema = Object(
     id="vehicle",
     description="Vehicle information",
     attributes=[
         Text(
-            id="plateNumber",
+            id="plate_number",
             description="The age of the person in years.",
             examples=[
                 (
@@ -100,11 +100,11 @@ llm = Together(
     temperature=0.7,
     max_tokens=128,
     top_k=1,
-    together_api_key=TOGETHER_API_KEY,
+    together_api_key=together_api_key,
 )
 
 
 def extract_prompt_data(prompt: str):
     chain = create_extraction_chain(llm, schema, encoder_or_encoder_class="json")
-    data = chain.invoke((prompt))["text"]["data"]["vehicle"][0]["plateNumber"]
+    data = chain.invoke((prompt))["text"]["data"]["vehicle"][0]["plate_number"]
     return data
