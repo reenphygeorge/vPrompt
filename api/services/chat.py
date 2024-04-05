@@ -3,11 +3,12 @@ from os import path, makedirs, environ
 from prisma import Prisma
 from pydantic import BaseModel
 from fastapi.responses import JSONResponse
-from llm.licence_plate import extract_prompt_data
-from services.footage.videodata import search_footage
+from llm.person_detect import extract_prompt_data as person_extract
+from llm.licence_plate import extract_prompt_data as plate_extract
+from services.footage.videodata import search_by_class, search_by_text_data
+from utils.cache import add_cache, get_cache
 from utils.list import no_repeat_list
 from utils.video_fetcher import video_trimmer
-from utils.cache import add_cache, get_cache
 from services.footage.delete import delete_footage
 from dotenv import load_dotenv
 
@@ -46,7 +47,8 @@ async def get_chat_info(chat_id: str):
     db = Prisma()
     await db.connect()
     result = await db.chat.find_first(
-        where={"id": chat_id}, include={"message": False, "footage": True}
+        where={"id": chat_id},
+        include={"message": False, "footage": True},
     )
     await db.disconnect()
     if result:
@@ -54,10 +56,14 @@ async def get_chat_info(chat_id: str):
     return {"success": False, "data": result}
 
 
-async def create_new_chat():
+async def create_new_chat(usecase: str):
+    if usecase not in ("person_detect", "licence_plate"):
+        return JSONResponse(
+            status_code=400, content={"success": False, "message": "Invalid usecase"}
+        )
     db = Prisma()
     await db.connect()
-    result = await db.chat.create(data={})
+    result = await db.chat.create({"title": "New chat", "usecase": usecase})
     await db.disconnect()
     data = {"success": True, "data": result, "message": "New Chat Created"}
     return data
@@ -86,21 +92,25 @@ async def create_new_message(data: CreateMessage):
 
     if result["success"] == False:
         return {"success": False, "message": "Invalid Chat"}
+    usecase = result["data"].usecase
 
     footage_id = result["data"].footage.id
     filename = result["data"].footage.filename
 
     try:
-        extracted_plate_numbers = extract_prompt_data(data.prompt)
+        if result["data"].usecase == "person_detect":
+            extracted_datas = person_extract(data.prompt)
+        elif result["data"].usecase == "licence_plate":
+            extracted_datas = plate_extract(data.prompt)
     except Exception as e:
-        return {"success": False, "message": "No plate numbers found"}
+        return {"success": False, "message": "No data found in prompt"}
 
     response = []
     json_response = []
     trim_filenames = []
 
-    for plate_number in extracted_plate_numbers:
-        output_filename = f"{plate_number}_{filename}"
+    for extracted_data in extracted_datas:
+        output_filename = f"{extracted_data}_{filename}"
         dir_path = f"./core/videos/trimmed/{footage_id}"
 
         # Create footage directory if not exist
@@ -115,14 +125,17 @@ async def create_new_message(data: CreateMessage):
             json_response.append(cache_data.decode("utf-8"))
             continue
 
-        # Fetch from db and add to redis
-        search_datas = await search_footage(db, plate_number, footage_id)
+        # Fetch from db
+        if usecase == "person_detect":
+            search_datas = await search_by_class(db, extracted_data, footage_id)
+        elif usecase == "licence_plate":
+            search_datas = await search_by_text_data(db, extracted_data, footage_id)
         search_datas.sort(key=lambda videodata: videodata.timestamp, reverse=False)
 
         if len(search_datas) == 0:
             response_data = {
-                "plate_number": plate_number,
-                "message": "No vehicle data found",
+                "prompt_data": extracted_data,
+                "message": "No data found",
             }
             response.append(response_data)
             json_response.append(dumps(response_data))
@@ -138,7 +151,7 @@ async def create_new_message(data: CreateMessage):
         # No re-trimming if trimmed video already present
         if path.exists(file_path) == False:
             output_filename = video_trimmer(
-                timestamps, filename, plate_number, footage_id
+                timestamps, filename, extracted_data, footage_id
             )
 
         url = f"{api_host_url}/videos/{footage_id}/{output_filename}"
@@ -146,7 +159,7 @@ async def create_new_message(data: CreateMessage):
         trim_filenames.append(output_filename)
 
         response_data = {
-            "plate_number": plate_number,
+            "prompt_data": extracted_data,
             "timestamps": timestamps,
             "url": url,
         }
@@ -156,6 +169,13 @@ async def create_new_message(data: CreateMessage):
         response.append(response_data)
 
         json_response.append(dumps(response_data))
+
+    await db.chat.update(
+        where={"id": data.chat_id},
+        data={
+            "title": data.prompt,
+        },
+    )
 
     await db.message.create(
         {

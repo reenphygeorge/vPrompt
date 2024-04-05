@@ -2,8 +2,22 @@ from logging import basicConfig
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from routes import chat, footage
+from fastapi.middleware.cors import CORSMiddleware
+from dotenv import load_dotenv
+from os import environ
+
+load_dotenv()
+frontend_host_url = environ["FRONTEND_HOST_URL"]
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[frontend_host_url],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Init Logger
 basicConfig(

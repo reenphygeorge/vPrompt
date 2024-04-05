@@ -17,6 +17,7 @@ redis_client = Redis(
 memory_limit = 1024 * 1024 * int(redis_memory_limit)
 response = redis_client.execute_command("CONFIG", "SET", "maxmemory", memory_limit)
 
+
 def add_cache(key: str, data, json: bool):
     if json:
         data = dumps(data)

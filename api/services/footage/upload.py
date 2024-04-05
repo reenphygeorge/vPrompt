@@ -8,12 +8,12 @@ from core.main import run_model
 
 
 async def model_service(file: UploadFile, chat_id: str):
-
     db = Prisma()
     await db.connect()
 
     # Checking if chat is valid
     result = await get_chat_info(chat_id)
+    usecase = result["data"].usecase
     await db.disconnect()
     if result["success"] == False:
         return JSONResponse(
@@ -25,8 +25,12 @@ async def model_service(file: UploadFile, chat_id: str):
         return JSONResponse(status_code=400, content=result)
     else:
         result = await update_db(file.filename, chat_id)
-        await run_model(file.filename, result.id)
-        return {"success": True, "message": "Video Processed Successfully"}
+        await run_model(file.filename, result.id, usecase)
+        return {
+            "success": True,
+            "data": chat_id,
+            "message": "Video Processed Successfully",
+        }
 
 
 def upload_footage(file: UploadFile):

@@ -11,6 +11,8 @@ datasource db {
 
 model Chat {
     id         String    @id @unique @default(dbgenerated("(gen_random_uuid())::text"))
+    title      String
+    usecase    String
     message    Message[]
     footage    Footage?  @relation(fields: [footage_id], references: [id])
     created_at DateTime  @default(now()) @db.Timestamp(0)

@@ -1,4 +1,10 @@
-async def update_footage(db, timestamp, text_data, footage_id, class_name):
+async def update_footage(
+    db,
+    timestamp,
+    footage_id,
+    class_name,
+    text_data="",
+):
     video_data_result = await db.videodata.find_many(
         where={
             "timestamp": timestamp,
@@ -18,10 +24,19 @@ async def update_footage(db, timestamp, text_data, footage_id, class_name):
         )
 
 
-async def search_footage(db, plate_number, footage_id):
+async def search_by_class(db, class_name, footage_id):
     return await db.videodata.find_many(
         where={
-            "text_data": plate_number,
+            "class_name": {"equals": class_name, "mode": "insensitive"},
+            "footage_id": footage_id,
+        }
+    )
+
+
+async def search_by_text_data(db, text_data, footage_id):
+    return await db.videodata.find_many(
+        where={
+            "text_data": {"equals": text_data, "mode": "insensitive"},
             "footage_id": footage_id,
         }
     )

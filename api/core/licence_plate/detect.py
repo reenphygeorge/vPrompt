@@ -1,7 +1,5 @@
 from ultralytics import YOLO
 from ultralytics.utils.plotting import Annotator, colors
-import cv2
-
 from core.licence_plate.ocr import read_license_plate
 from services.footage.videodata import update_footage
 
@@ -57,7 +55,7 @@ async def detect(frame, timestamp, footage_id, db):
                         await update_footage(
                             db,
                             timestamp,
-                            plate_number,
                             footage_id,
                             names[int(vehicle_cls)],
+                            plate_number,
                         )

@@ -1,9 +1,10 @@
 import cv2
 from prisma import Prisma
-from core.licence_plate.detect import detect
+from core.person_detect.detect import detect as person_detect
+from core.licence_plate.detect import detect as plate_detect
 
 
-async def run_model(filename, footage_id):
+async def run_model(filename, footage_id, usecase):
     cap = cv2.VideoCapture("./core/videos/uploads/" + filename)
     db = Prisma()
 
@@ -38,6 +39,8 @@ async def run_model(filename, footage_id):
         # Format the timestamp string
         timestamp = f"{hours:02}:{minutes:02}:{seconds:02}"
 
-        await detect(frame, timestamp, footage_id, db)
-
+        if usecase == "person_detect":
+            await person_detect(frame, timestamp, footage_id, db)
+        elif usecase == "licence_plate":
+            await plate_detect(frame, timestamp, footage_id, db)
     await db.disconnect()

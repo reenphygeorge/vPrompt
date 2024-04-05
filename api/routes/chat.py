@@ -1,5 +1,5 @@
 from logging import exception
-from fastapi import APIRouter, Form
+from fastapi import APIRouter, Form, Body
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from services.chat import (
@@ -23,6 +23,10 @@ class CreateMessage(BaseModel):
     prompt: str
 
 
+class CreateChat(BaseModel):
+    usecase: str
+
+
 @app.get("/")
 async def get_chat(id: str = None, page: int = 1, limit: int = 10):
     try:
@@ -43,9 +47,9 @@ async def get_chat(id: str = None, page: int = 1, limit: int = 10):
 
 
 @app.post("/")
-async def create_chat():
+async def create_chat(data: CreateChat):
     try:
-        return await create_new_chat()
+        return await create_new_chat(data.usecase)
     except Exception as e:
         exception(e)
         return JSONResponse(
