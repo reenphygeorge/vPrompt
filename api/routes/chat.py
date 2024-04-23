@@ -46,22 +46,6 @@ async def get_chat(id: str = None, page: int = 1, limit: int = 10):
         )
 
 
-@app.post("/")
-async def create_chat(data: CreateChat):
-    try:
-        return await create_new_chat(data.usecase)
-    except Exception as e:
-        exception(e)
-        return JSONResponse(
-            status_code=500,
-            content={
-                "success": False,
-                "message": "Something Went Wrong!",
-                "log": f"{api_host_url}/logs/error.log",
-            },
-        )
-
-
 @app.delete("/")
 async def delete_chat(id: str = Form(...)):
     try:

@@ -28,7 +28,7 @@ async def model_service(file: UploadFile, chat_id: str):
         await run_model(file.filename, result.id, usecase)
         return {
             "success": True,
-            "data": chat_id,
+            "data": {"id":chat_id},
             "message": "Video Processed Successfully",
         }
 
