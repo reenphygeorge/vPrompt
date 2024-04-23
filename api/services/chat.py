@@ -9,6 +9,7 @@ from services.footage.videodata import search_by_class, search_by_text_data
 from utils.cache import add_cache, get_cache
 from utils.list import no_repeat_list
 from utils.video_fetcher import video_trimmer
+from utils.plotter import plotter
 from services.footage.delete import delete_footage
 from dotenv import load_dotenv
 
@@ -119,11 +120,11 @@ async def create_new_message(data: CreateMessage):
 
         file_path = f"{dir_path}/{output_filename}"
         # Check in redis
-        cache_data = get_cache(output_filename)
-        if cache_data != None and path.exists(file_path) == True:
-            response.append(loads(cache_data))
-            json_response.append(cache_data.decode("utf-8"))
-            continue
+        # cache_data = get_cache(output_filename)
+        # if cache_data != None and path.exists(file_path) == True:
+        #     response.append(loads(cache_data))
+        #     json_response.append(cache_data.decode("utf-8"))
+        #     continue
 
         # Fetch from db
         if usecase == "person_detect":
@@ -142,17 +143,23 @@ async def create_new_message(data: CreateMessage):
             continue
 
         timestamps = []
+        plot_data = []
 
         for search_data in search_datas:
             timestamps.append(search_data.timestamp)
+            plot_data.append([search_data.timestamp,*search_data.object_box])
 
         timestamps = no_repeat_list(timestamps)
+        
+        print(plot_data)
 
         # No re-trimming if trimmed video already present
         if path.exists(file_path) == False:
             output_filename = video_trimmer(
                 timestamps, filename, extracted_data, footage_id
             )
+
+        plotter(output_filename,plot_data,output_filename)
 
         url = f"{api_host_url}/videos/{footage_id}/{output_filename}"
 

@@ -3,6 +3,7 @@ async def update_footage(
     timestamp,
     footage_id,
     class_name,
+    object_box,
     text_data="",
 ):
     video_data_result = await db.videodata.find_many(
@@ -19,6 +20,7 @@ async def update_footage(
                 "timestamp": timestamp,
                 "text_data": text_data,
                 "class_name": class_name,
+                "object_box":object_box,
                 "footage": {"connect": {"id": footage_id}},
             }
         )

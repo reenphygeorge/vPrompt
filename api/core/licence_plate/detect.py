@@ -57,5 +57,6 @@ async def detect(frame, timestamp, footage_id, db):
                             timestamp,
                             footage_id,
                             names[int(vehicle_cls)],
+                            vehicle_box,
                             plate_number,
                         )
