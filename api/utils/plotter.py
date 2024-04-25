@@ -30,10 +30,10 @@ def plotter(input_video_path,timestamp_with_coordinates,output_video_path):
     hours = int(timestamp_sec // 3600)
     minutes = int((timestamp_sec % 3600) // 60)
     seconds = int((timestamp_sec % 3600) % 60)
-    print(hours)
+
         # Format the timestamp string
     timestamp = f"{hours:02}:{minutes:02}:{seconds:02}"
-    print(timestamp)
+    
     
     # Initialize VideoWriter object to save output video
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
