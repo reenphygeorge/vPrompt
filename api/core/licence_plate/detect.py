@@ -9,12 +9,28 @@ license_plate = YOLO("./core/models/license_plate_detector.pt")
 names = coco.names
 
 
+def clip_boxes(boxes, image_shape):
+    height, width = image_shape
+    clipped_boxes = []
+    for box in boxes:
+        xmin, ymin, xmax, ymax = box
+        # Clip x-coordinates
+        xmin = max(0, min(xmin, width - 1))
+        xmax = max(0, min(xmax, width - 1))
+        # Clip y-coordinates
+        ymin = max(0, min(ymin, height - 1))
+        ymax = max(0, min(ymax, height - 1))
+        clipped_boxes.append((xmin, ymin, xmax, ymax))
+    return clipped_boxes
+
+
 def detect_vehicles(frame):
     results = coco(frame, show=False, verbose=False)
     boxes = results[0].boxes.xyxy.cpu().tolist()
+    clipped_boxes = clip_boxes(boxes, results[0].orig_shape)
     clss = results[0].boxes.cls.cpu().tolist()
     annotator = Annotator(frame, line_width=2, example=names)
-    return boxes, clss, annotator
+    return clipped_boxes, clss, annotator
 
 
 def detect_plate(vehicle_frame):
