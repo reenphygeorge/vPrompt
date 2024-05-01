@@ -20,10 +20,19 @@ async def update_footage(
                 "timestamp": timestamp,
                 "text_data": text_data,
                 "class_name": class_name,
-                "object_box":object_box,
+                "object_box": object_box,
                 "footage": {"connect": {"id": footage_id}},
             }
         )
+
+
+async def search_by_footage(db, footage_id):
+    return await db.videodata.find_many(
+        where={
+            "footage_id": footage_id,
+        },
+        take=10,
+    )
 
 
 async def search_by_class(db, class_name, footage_id):

@@ -26,10 +26,11 @@ async def get_all_chats(page: int, limit: int):
     db = Prisma()
     await db.connect()
     result = await db.chat.find_many(skip=(page - 1) * limit, take=limit)
-    result.sort(key=lambda user: user.created_at, reverse=True)
     await db.disconnect()
-    data = {"success": True, "data": result}
-    return data
+    if result:
+        return {"success": True, "data": result}
+    result.sort(key=lambda user: user.created_at, reverse=True)
+    return {"success": False, "data": result, "log": f"{api_host_url}/logs/error.log"}
 
 
 async def get_chat_by_id(chat_id: str, page: int, limit: int):
@@ -41,7 +42,7 @@ async def get_chat_by_id(chat_id: str, page: int, limit: int):
     await db.disconnect()
     if result:
         return {"success": True, "data": result}
-    return {"success": False, "data": result}
+    return {"success": False, "data": result, "log": f"{api_host_url}/logs/error.log"}
 
 
 async def get_chat_info(chat_id: str):
@@ -54,13 +55,18 @@ async def get_chat_info(chat_id: str):
     await db.disconnect()
     if result:
         return {"success": True, "data": result}
-    return {"success": False, "data": result}
+    return {"success": False, "data": result, "log": f"{api_host_url}/logs/error.log"}
 
 
 async def create_new_chat(usecase: str):
     if usecase not in ("person_detect", "licence_plate"):
         return JSONResponse(
-            status_code=400, content={"success": False, "message": "Invalid usecase"}
+            status_code=400,
+            content={
+                "success": False,
+                "message": "Invalid usecase",
+                "log": f"{api_host_url}/logs/error.log",
+            },
         )
     db = Prisma()
     await db.connect()
@@ -80,7 +86,12 @@ async def delete_chat_by_id(chat_id: str):
         return {"success": True, "data": chat_result, "message": "Chat Deleted"}
     await db.disconnect()
     return JSONResponse(
-        status_code=400, content={"success": False, "message": "Invalid Chat"}
+        status_code=400,
+        content={
+            "success": False,
+            "message": "Invalid Chat",
+            "log": f"{api_host_url}/logs/error.log",
+        },
     )
 
 
@@ -92,7 +103,11 @@ async def create_new_message(data: CreateMessage):
     result = await get_chat_info(data.chat_id)
 
     if result["success"] == False:
-        return {"success": False, "message": "Invalid Chat"}
+        return {
+            "success": False,
+            "message": "Invalid Chat",
+            "log": f"{api_host_url}/logs/error.log",
+        }
     usecase = result["data"].usecase
 
     footage_id = result["data"].footage.id
@@ -104,7 +119,11 @@ async def create_new_message(data: CreateMessage):
         elif result["data"].usecase == "licence_plate":
             extracted_datas = plate_extract(data.prompt)
     except Exception as e:
-        return {"success": False, "message": "No data found in prompt"}
+        return {
+            "success": False,
+            "message": "No data found in prompt",
+            "log": f"{api_host_url}/logs/error.log",
+        }
 
     response = []
     json_response = []
