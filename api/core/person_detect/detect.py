@@ -41,5 +41,9 @@ async def detect(frame, timestamp, footage_id, db):
                 label=names[int(person_clss)],
             )
             await update_footage(
-                db, timestamp, footage_id, names[int(person_clss)], person_boxes
+                db,
+                timestamp,
+                footage_id,
+                names[int(person_clss)],
+                list(person_boxes[0]),
             )

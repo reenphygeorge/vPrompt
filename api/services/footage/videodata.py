@@ -6,13 +6,22 @@ async def update_footage(
     object_box,
     text_data="",
 ):
-    video_data_result = await db.videodata.find_many(
-        where={
-            "timestamp": timestamp,
-            "text_data": text_data,
-            "footage_id": footage_id,
-        }
-    )
+    if text_data == "":
+        video_data_result = await db.videodata.find_many(
+            where={
+                "timestamp": timestamp,
+                "text_data": text_data,
+                "footage_id": footage_id,
+            }
+        )
+    else:
+        video_data_result = await db.videodata.find_many(
+            where={
+                "timestamp": timestamp,
+                "class_name": class_name,
+                "footage_id": footage_id,
+            }
+        )
 
     if len(video_data_result) == 0:
         await db.videodata.create(
