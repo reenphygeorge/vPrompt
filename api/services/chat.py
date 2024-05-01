@@ -12,6 +12,7 @@ from utils.video_fetcher import video_trimmer
 from utils.plotter import plotter
 from services.footage.delete import delete_footage
 from dotenv import load_dotenv
+from utils.suggestions import get_suggestions
 
 load_dotenv()
 api_host_url = environ["API_HOST_URL"]
@@ -36,13 +37,23 @@ async def get_all_chats(page: int, limit: int):
 async def get_chat_by_id(chat_id: str, page: int, limit: int):
     db = Prisma()
     await db.connect()
+    result = await get_chat_info(chat_id)
+    footage_id = result["data"].footage.id
+    usecase = result["data"].usecase
+    if result["success"] == False:
+        return {
+            "success": False,
+            "data": result,
+            "log": f"{api_host_url}/logs/error.log",
+        }
     result = await db.message.find_many(
         where={"chat_id": chat_id}, skip=(page - 1) * limit, take=limit
     )
-    await db.disconnect()
-    if result:
-        return {"success": True, "data": result}
-    return {"success": False, "data": result, "log": f"{api_host_url}/logs/error.log"}
+    suggestions = []
+    if len(result) == 0:
+        suggestions = await get_suggestions(db, usecase, footage_id)
+        await db.disconnect()
+    return {"success": True, "data": result, "suggestions": suggestions}
 
 
 async def get_chat_info(chat_id: str):

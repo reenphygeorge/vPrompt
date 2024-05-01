@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 from core.main import run_model
 from services.footage.videodata import search_by_footage
 from utils.list import no_repeat_list
+from utils.suggestions import get_suggestions
 
 load_dotenv()
 api_host_url = environ["API_HOST_URL"]
@@ -39,32 +40,14 @@ async def model_service(file: UploadFile, chat_id: str):
         await run_model(file.filename, result.id, usecase)
 
         # Suggested prompts
-        suggestion_datas = []
         await db.connect()
-        videodatas = await search_by_footage(db, result.id)
-        if usecase == "licence_plate":
-            for videodata in videodatas:
-                suggestion_datas.append(videodata.text_data)
-            suggestion_datas = no_repeat_list(suggestion_datas)
-            suggestion_datas = suggestion_datas[:4]
-            suggestion_datas = [
-                f"Find a vehicle with plateNumber: {suggestion_data}"
-                for suggestion_data in suggestion_datas
-            ]
-        elif usecase == "person_detect":
-            for videodata in videodatas:
-                suggestion_datas.append(videodata.class_name)
-            suggestion_datas = no_repeat_list(suggestion_datas)
-            suggestion_datas = suggestion_datas[:4]
-            suggestion_datas = [
-                f"Find  {suggestion_data}" for suggestion_data in suggestion_datas
-            ]
+        suggestions = await get_suggestions(db, usecase, result.id)
 
         return {
             "success": True,
             "data": {"id": chat_id},
             "message": "Video Processed Successfully",
-            "suggestions": suggestion_datas,
+            "suggestions": suggestions,
         }
 
 
