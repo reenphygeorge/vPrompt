@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  /* @apply bg-cover bg-center bg-no-repeat h-screen flex items-center justify-center text-white;
+  background-image: url("../public/background2.png");
+  height: 100vh; */
+}
