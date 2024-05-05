@@ -5,6 +5,7 @@ import { RiArrowLeftDoubleLine, RiArrowRightDoubleFill } from "react-icons/ri";
 import { ChatContext } from "@/context/ChatContext";
 import ChatItem from "./ChatItem";
 import axios from "axios";
+import { HiPlusSm } from "react-icons/hi";
 
 const API_URL = `${process.env.NEXT_PUBLIC_BASE_URL}/api/chat/?page=1&limit=10`;
 
@@ -46,21 +47,20 @@ const SideBar: React.FC = () => {
   return (
     <>
       <div
-        className={`flex-none bg-customBlack ${
-          isSidebarCollapsed ? "w-0" : "w-1/5"
-        } h-screen overflow-hidden transition-all`}
+        className={`flex-none bg-customBlack ${isSidebarCollapsed ? "w-0" : "w-1/5"
+          } h-screen overflow-hidden transition-all`}
       >
-        <div className="flex bg-[#1D2233] p-2 items-center justify-center">
-          <div className="text-white text-2xl">vPrompt</div>
-          <div className=" text-white text-2xl h-10 w-10 flex items-center justify-center">
+        <div className="vp-header h-12 m-7 rounded-md flex gap-5 items-center justify-center">
+          <div className="text-white md:text-lg text-xs select-none vp-title">vPrompt</div>
+          <div>
             <button
               onClick={() => {
                 setIsProcessed(false);
                 setIsNewChat(true);
               }}
-              className="rounded-full bg-customBlack hover:scale-110 hover:text-gray-700"
+              className="rounded-full bg-black md:h-7 md:w-7 h-4 w-4 hover:opacity-60 flex justify-center items-center"
             >
-              <IoAdd />
+              <HiPlusSm size={17} />
             </button>
           </div>
         </div>

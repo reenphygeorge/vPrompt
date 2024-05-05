@@ -1,7 +1,8 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import axios from "axios"; // Import Axios
 import { ChatContext, ChatsContext } from "@/context/ChatContext";
 import { VideoContext } from "@/context/VideoContext";
+import { MdDeleteOutline } from "react-icons/md";
 
 interface ChatItemProps {
   id: string;
@@ -52,10 +53,13 @@ const ChatItem: React.FC<ChatItemProps> = ({ id, title }) => {
 
   return (
     <div
-      className="chat-item w-4/5 h-8 text-[#D4D4D4] my-2 truncate mx-auto hover:bg-gray-700 hover:text-white hover:cursor-pointer"
+      className="flex chat-item w-4/5 h-10 justify-between items-center gap-10 text-[#D4D4D4] my-2 mx-auto hover:bg-gray-900 rounded-md hover:text-white hover:cursor-pointer group"
       onClick={handleClick}
     >
-      <div className="chat-item-name m-auto text-center">{title}</div>
+      <div className="ml-3 chat-item-name truncate w-4/5">{title}</div>
+      <div className="mr-3 hidden group-hover:block">
+        <MdDeleteOutline className="text-white hover:text-red-500" />
+      </div>
     </div>
   );
 };

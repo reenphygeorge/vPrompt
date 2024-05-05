@@ -73,7 +73,7 @@ const ChatArea: React.FC = () => {
     setPrompt(suggestion);
   };
 
-  useEffect(() => {}, [chats]); // Run this effect whenever chats state changes
+  useEffect(() => { console.log(chats) }, [chats]); // Run this effect whenever chats state changes
 
   return (
     <div className="flex relative justify-center w-full my-auto mr-10 h-screen">
@@ -114,7 +114,7 @@ const ChatArea: React.FC = () => {
 
       {/* Chat display */}
       {suggestions.length === 0 && (
-        <ScrollArea className="flex flex-col mt-10 h-[500px] w-[350px] rounded-md border p-4 w-full text-white">
+        <ScrollArea className="flex flex-col bg-[#FFFFFF] mt-10 h-[500px] w-[350px] rounded-md p-4 w-full text-white bg-opacity-10 backdrop-filter backdrop-blur-lg">
           {chats.map((chat, index) => (
             <div key={index} className="flex flex-col">
               <div className="w-full h-6 mt-2">{chat.prompt}</div>
@@ -134,10 +134,10 @@ const ChatArea: React.FC = () => {
       )}
 
       {/* Input box */}
-      <div className="flex justify-center absolute h-12 bottom-10 flex-auto p-2 w-full ">
+      <div className="flex justify-center absolute h-12 bottom-10 flex-auto p-2 w-full">
         <input
           type="text"
-          className="w-4/5 rounded p-2 bg-customBlack text-white"
+          className="w-4/5 h-10 rounded-md p-4 bg-customBlack text-white"
           placeholder="Enter your prompt"
           value={prompt}
           onChange={handlePromptChange}
@@ -146,7 +146,7 @@ const ChatArea: React.FC = () => {
         <div className="flex items-center h-full justify-center">
           <button
             name="send"
-            className="w-full p-2 text-xl h-full hover:scale-105 hover:text-blue-600"
+            className="w-full px-3 text-xl h-full hover:scale-105 hover:text-blue-600"
             onClick={handleSendClick}
           >
             {loading ? (

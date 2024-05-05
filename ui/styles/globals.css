@@ -2,14 +2,38 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: "sf-regular";
+  src: url("/fonts/SFPRODISPLAYREGULAR.OTF") format("opentype"),
+}
+
+@font-face {
+  font-family: "sf-medium";
+  src: url("/fonts/SFPRODISPLAYMEDIUM.OTF") format("opentype"),
+}
+
+@font-face {
+  font-family: "sf-bold";
+  src: url("/fonts/SFPRODISPLAYBOLD.OTF") format("opentype"),
+}
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: 'sf-regular';
+  }
+  
+  .vp-header {
+    background: linear-gradient(91.3deg, rgba(41, 94, 90, 0.26) 0.34%, rgba(255, 255, 255, 0.17) 100%);
+    backdrop-filter: blur(2px);
+  }
+  
+  .vp-title {
+    font-family: 'sf-bold'
 }
 
 body {
-  /* @apply bg-cover bg-center bg-no-repeat h-screen flex items-center justify-center text-white;
-  background-image: url("../public/background2.png");
-  height: 100vh; */
+  @apply bg-cover bg-center bg-no-repeat h-screen flex items-center justify-center text-white;
+    background-image: url("/background.png");
+    height: 100vh;
 }

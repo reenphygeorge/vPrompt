@@ -82,9 +82,8 @@ const DragAndDropInput: React.FC<{ usecase: string }> = ({ usecase }) => {
 
   return (
     <div
-      className={`border-2 border-dashed p-4 w-80 h-80 mt-40 ${
-        isDragging ? "border-blue-500" : "border-[#606060]"
-      } flex-col flex justify-center`}
+      className={`border-2 border-dashed p-4 w-80 h-80 mt-40 ${isDragging ? "border-blue-500" : "border-[#606060]"
+        } flex-col flex justify-center`}
       onDragEnter={handleDragEnter}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
@@ -122,7 +121,7 @@ const DragAndDropInput: React.FC<{ usecase: string }> = ({ usecase }) => {
             id="fileInput"
           />
           <Button
-            className="text-center bg-blue-700 w-40 mx-auto mt-40"
+            className="text-center !bg-blue-700 w-40 mx-auto mt-40"
             onClick={() => document.getElementById("fileInput")?.click()}
           >
             Browse

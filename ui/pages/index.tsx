@@ -17,21 +17,14 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 export default function Home(): JSX.Element {
-  const [backgroundImage, setBackgroundImage] = useState<string>(
-    "url('/background2.png')"
-  );
 
   const { isProcessed, setIsProcessed } = useContext(VideoContext);
 
-  const setBackground = (imageUrl: string) => {
-    setBackgroundImage(imageUrl);
-  };
-  const [model, setModel] = React.useState("Select Model");
+  const [model, setModel] = useState("Select Model");
 
   return (
     <div
       className="relative flex w-screen font-sans "
-      style={{ backgroundImage: backgroundImage }}
     >
       <SideBar />
       {!isProcessed && (
@@ -43,7 +36,7 @@ export default function Home(): JSX.Element {
           <div className="flex w-full justify-center">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline">{model}</Button>
+                <Button className="!bg-black !text-white">{model === 'licence_plate' ? 'Licence Plate' : model === 'person_detect' ? 'Person Detect' : model}</Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56">
                 <DropdownMenuSeparator />
