@@ -1,29 +1,21 @@
-import { useState, useContext, useEffect } from "react";
-import { IoAdd } from "react-icons/io5";
-import { VideoContext } from "../../context/VideoContext";
+import React, { useState, useContext, useEffect } from "react";
 import { RiArrowLeftDoubleLine, RiArrowRightDoubleFill } from "react-icons/ri";
-import { ChatContext } from "@/context/ChatContext";
 import ChatItem from "./ChatItem";
 import axios from "axios";
 import { HiPlusSm } from "react-icons/hi";
+import { ChatContext, ChatsContext } from "@/context/ChatContext";
+import { VideoContext } from "../../context/VideoContext";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const API_URL = `${process.env.NEXT_PUBLIC_BASE_URL}/api/chat/?page=1&limit=10`;
 
-type ChatItem = {
-  id: string;
-  title: string;
-  usecase: string;
-  message: string | null;
-  footage: string | null;
-  created_at: string;
-  footage_id: string;
-};
-
 const SideBar: React.FC = () => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState<boolean>(false);
-  const [chats, setChats] = useState<ChatItem[]>([]);
+  const { chatHistory, setChatHistory } = useContext(ChatsContext);
   const { isProcessed, setIsProcessed } = useContext(VideoContext);
   const { isNewChat, setIsNewChat } = useContext(ChatContext);
+
   const toggleSidebar = () => {
     setIsSidebarCollapsed(!isSidebarCollapsed);
   };
@@ -32,26 +24,38 @@ const SideBar: React.FC = () => {
     try {
       const response = await axios.get(API_URL);
       console.log(response.data.data);
-      setChats(response.data.data);
+      setChatHistory(response.data.data);
       // Process the fetched data
     } catch (error) {
       // Handle error
       console.error("Error fetching data:", error);
+      toast.error("Error fetching data. Please try again.");
     }
   };
 
   useEffect(() => {
+    if (isNewChat) {
+      fetchData(); // Call fetchData only if isNewChat is true
+      setIsNewChat(false); // Reset isNewChat to false after fetching data
+    }
+  }, [isNewChat]);
+
+  const fetchChats = () => {
+    // Trigger fetchData when a chat item is deleted
     fetchData();
-  }, []);
+  };
 
   return (
     <>
       <div
-        className={`flex-none bg-customBlack ${isSidebarCollapsed ? "w-0" : "w-1/5"
-          } h-screen overflow-hidden transition-all`}
+        className={`flex-none bg-customBlack ${
+          isSidebarCollapsed ? "w-0" : "w-1/5"
+        } h-screen overflow-hidden transition-all`}
       >
         <div className="vp-header h-12 m-7 rounded-md flex gap-5 items-center justify-center">
-          <div className="text-white md:text-lg text-xs select-none vp-title">vPrompt</div>
+          <div className="text-white md:text-lg text-xs select-none vp-title">
+            vPrompt
+          </div>
           <div>
             <button
               onClick={() => {
@@ -65,8 +69,13 @@ const SideBar: React.FC = () => {
           </div>
         </div>
 
-        {chats.map((chat) => (
-          <ChatItem key={chat.id} title={chat.title} id={chat.id} />
+        {chatHistory.map((chat) => (
+          <ChatItem
+            key={chat.id}
+            title={chat.title}
+            id={chat.id}
+            onChatDeleted={fetchChats} // Pass callback function
+          />
         ))}
       </div>
       <div className="flex items-center">

@@ -3,6 +3,8 @@ import { Button } from "@/components/ui/button";
 import { VideoContext } from "@/context/VideoContext";
 import { ChatContext } from "@/context/ChatContext";
 import axios from "axios";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const DragAndDropInput: React.FC<{ usecase: string }> = ({ usecase }) => {
   const [isDragging, setIsDragging] = useState(false);
@@ -72,18 +74,21 @@ const DragAndDropInput: React.FC<{ usecase: string }> = ({ usecase }) => {
           .catch((error) => {
             console.error("Error:", error);
             setIsLoading(false);
+            toast.error("Error uploading file. Please try again."); // Display error toast
           });
       } else {
         console.log("Invalid file type:", file.type);
         setIsLoading(false);
+        toast.error("Invalid file type. Please upload a valid video file."); // Display error toast
       }
     }
   };
 
   return (
     <div
-      className={`border-2 border-dashed p-4 w-80 h-80 mt-40 ${isDragging ? "border-blue-500" : "border-[#606060]"
-        } flex-col flex justify-center`}
+      className={`border-2 border-dashed p-4 w-80 h-80 mt-40 ${
+        isDragging ? "border-blue-500" : "border-[#606060]"
+      } flex-col flex justify-center`}
       onDragEnter={handleDragEnter}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}

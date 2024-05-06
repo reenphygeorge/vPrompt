@@ -27,10 +27,6 @@ export const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
   const [chatId, setChatId] = useState<string>("");
   const [suggestions, setSuggestions] = useState<string[]>([]);
 
-  const setNewChat = (isNew: boolean) => {
-    setIsNewChat(isNew);
-  };
-
   return (
     <ChatContext.Provider
       value={{
@@ -56,26 +52,29 @@ interface Chat {
 interface ChatsContextType {
   chats: Chat[];
   setChats: (chats: Chat[]) => void;
+  chatHistory: any[];
+  setChatHistory: (chatHistory: any[]) => void;
 }
 
 export const ChatsContext = createContext<ChatsContextType>({
   chats: [],
   setChats: () => {},
+  chatHistory: [],
+  setChatHistory: () => {},
 });
-
-interface ChatProviderProps {
-  children: ReactNode;
-}
 
 export const ChatsProvider: React.FC<ChatProviderProps> = ({ children }) => {
   const [chats, setChats] = useState<Chat[]>([]);
+  const [chatHistory, setChatHistory] = useState<any[]>([]);
 
   useEffect(() => {
     console.log(chats);
   }, [chats]); // Watch for changes in the 'chats' state
 
   return (
-    <ChatsContext.Provider value={{ chats, setChats }}>
+    <ChatsContext.Provider
+      value={{ chats, setChats, chatHistory, setChatHistory }}
+    >
       {children}
     </ChatsContext.Provider>
   );
