@@ -1,5 +1,5 @@
 from logging import exception
-from fastapi import APIRouter, Form, Body
+from fastapi import APIRouter, Body
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from services.chat import (
@@ -46,8 +46,8 @@ async def get_chat(id: str = None, page: int = 1, limit: int = 10):
         )
 
 
-@app.delete("/")
-async def delete_chat(id: str = Form(...)):
+@app.delete("/{id}")
+async def delete_chat(id: str):
     try:
         return await delete_chat_by_id(id)
     except Exception as e:
