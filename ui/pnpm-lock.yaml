@@ -44,9 +44,9 @@ dependencies:
   react-icons:
     specifier: ^5.0.1
     version: 5.0.1(react@18.2.0)
-  react-toastify:
-    specifier: ^10.0.5
-    version: 10.0.5(react-dom@18.2.0)(react@18.2.0)
+  sonner:
+    specifier: ^1.4.41
+    version: 1.4.41(react-dom@18.2.0)(react@18.2.0)
   tailwind-merge:
     specifier: ^2.2.1
     version: 2.2.1
@@ -2976,17 +2976,6 @@ packages:
       tslib: 2.6.2
     dev: false
 
-  /react-toastify@10.0.5(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-mNKt2jBXJg4O7pSdbNUfDdTsK9FIdikfsIE/yUCxbAEXl4HMyJaivrVFcn3Elvt5xvCQYhUZm+hqTIu1UXM3Pw==}
-    peerDependencies:
-      react: '>=18'
-      react-dom: '>=18'
-    dependencies:
-      clsx: 2.1.0
-      react: 18.2.0
-      react-dom: 18.2.0(react@18.2.0)
-    dev: false
-
   /react@18.2.0:
     resolution: {integrity: sha512-/3IjMdb2L9QbBdWiW5e3P2/npwMBaU9mHCSCUzNln0ZCYbcfTsGbTJrU/kGemdH2IWmB2ioZ+zkxtmq6g09fGQ==}
     engines: {node: '>=0.10.0'}
@@ -3155,6 +3144,16 @@ packages:
     resolution: {integrity: sha512-g9Q1haeby36OSStwb4ntCGGGaKsaVSjQ68fBxoQcutl5fS1vuY18H3wSt3jFyFtrkx+Kz0V1G85A4MyAdDMi2Q==}
     engines: {node: '>=8'}
     dev: true
+
+  /sonner@1.4.41(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-uG511ggnnsw6gcn/X+YKkWPo5ep9il9wYi3QJxHsYe7yTZ4+cOd1wuodOUmOpFuXL+/RE3R04LczdNCDygTDgQ==}
+    peerDependencies:
+      react: ^18.0.0
+      react-dom: ^18.0.0
+    dependencies:
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+    dev: false
 
   /source-map-js@1.0.2:
     resolution: {integrity: sha512-R0XvVJ9WusLiqTCEiGCmICCMplcCkIwwR11mOSD9CR5u+IXYdiseeEuXCVAjS54zqwkLcPNnmU4OeJ6tUrWhDw==}

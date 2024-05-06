@@ -3,8 +3,6 @@ import axios from "axios";
 import { ChatContext, ChatsContext } from "@/context/ChatContext";
 import { VideoContext } from "@/context/VideoContext";
 import { MdDeleteOutline } from "react-icons/md";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
 interface ChatItemProps {
   id: string;
@@ -33,12 +31,10 @@ const ChatItem: React.FC<ChatItemProps> = ({ id, title, onChatDeleted }) => {
       })
       .catch((error) => {
         console.error("Error deleting chat:", error);
-        toast.error("Error deleting chat. Please try again.");
       });
   };
 
   const handleClick = () => {
-    setIsNewChat(false);
     setChatId(id);
 
     axios
@@ -59,14 +55,13 @@ const ChatItem: React.FC<ChatItemProps> = ({ id, title, onChatDeleted }) => {
         setChats(result);
 
         if (response.data.suggestions) {
-          setIsNewChat(true);
-          setSuggestions(response.data.suggestions);
+          setSuggestions(response.data.suggestions); // Move inside if block
+          setIsNewChat(true); // Set isNewChat to true here
         }
         setIsProcessed(true);
       })
       .catch((error) => {
         console.error("Error fetching messages:", error);
-        toast.error("Error fetching messages. Please try again.");
       });
   };
 

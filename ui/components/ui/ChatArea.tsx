@@ -5,8 +5,6 @@ import axios from "axios"; // Import Axios
 import SuggestionItem from "./SuggestionItem";
 import { ChatContext, ChatsContext } from "@/context/ChatContext";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
 const ChatArea: React.FC = () => {
   const { setSuggestions, suggestions } = useContext(ChatContext);
@@ -61,7 +59,6 @@ const ChatArea: React.FC = () => {
         // Handle error if needed
         console.error("Error sending prompt:", error);
         setLoading(false); // Set loading to false in case of error
-        toast.error("Error sending prompt. Please try again.");
       });
   };
 

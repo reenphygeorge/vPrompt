@@ -5,8 +5,6 @@ import axios from "axios";
 import { HiPlusSm } from "react-icons/hi";
 import { ChatContext, ChatsContext } from "@/context/ChatContext";
 import { VideoContext } from "../../context/VideoContext";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
 const API_URL = `${process.env.NEXT_PUBLIC_BASE_URL}/api/chat/?page=1&limit=10`;
 
@@ -29,7 +27,6 @@ const SideBar: React.FC = () => {
     } catch (error) {
       // Handle error
       console.error("Error fetching data:", error);
-      toast.error("Error fetching data. Please try again.");
     }
   };
 

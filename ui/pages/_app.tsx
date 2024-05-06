@@ -4,7 +4,7 @@ import type { AppProps } from "next/app";
 import { VideoProvider } from "../context/VideoContext";
 import { ChatProvider } from "@/context/ChatContext";
 import { ChatsProvider } from "@/context/ChatContext";
-import { ToastContainer } from "react-toastify";
+import { Toaster } from "@/components/ui/sonner";
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
@@ -16,7 +16,7 @@ export default function App({ Component, pageProps }: AppProps) {
           </ChatProvider>
         </ChatsProvider>
       </VideoProvider>
-      <ToastContainer />
+      <Toaster className="text-[#D4D4D4] bg-black" />
     </ThemeProvider>
   );
 }
