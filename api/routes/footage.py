@@ -1,7 +1,6 @@
 from logging import exception
 from fastapi import APIRouter, File, UploadFile, Form
 from fastapi.responses import JSONResponse
-from services.chat import create_new_chat
 from services.footage.upload import model_service
 from dotenv import load_dotenv
 from os import path, remove, environ
@@ -11,15 +10,12 @@ api_host_url = environ["API_HOST_URL"]
 
 app = APIRouter()
 
-@app.post("/upload")
-async def model_execute(usecase: str,file: UploadFile = File(...)):
-    try:
-        # Creating new chat
-        data =  await create_new_chat(usecase)
-        chat_id = data["data"].id
 
+@app.post("/upload")
+async def model_execute(usecase: str, file: UploadFile = File(...)):
+    try:
         # Save video and run model
-        return await model_service(file, chat_id)
+        return await model_service(file, usecase)
     except Exception as e:
         # Delete video file if processing failed, to allow retry with same file
         UPLOAD_DIR = "./core/videos/uploads"

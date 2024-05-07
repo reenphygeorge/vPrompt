@@ -31,11 +31,8 @@ const SideBar: React.FC = () => {
   };
 
   useEffect(() => {
-    if (isNewChat) {
-      fetchData(); // Call fetchData only if isNewChat is true
-      setIsNewChat(false); // Reset isNewChat to false after fetching data
-    }
-  }, [isNewChat]);
+    fetchData(); // Call fetchData only if isNewChat is true
+  }, []);
 
   const fetchChats = () => {
     // Trigger fetchData when a chat item is deleted
@@ -45,9 +42,8 @@ const SideBar: React.FC = () => {
   return (
     <>
       <div
-        className={`flex-none bg-customBlack ${
-          isSidebarCollapsed ? "w-0" : "w-1/5"
-        } h-screen overflow-hidden transition-all`}
+        className={`flex-none bg-customBlack ${isSidebarCollapsed ? "w-0" : "w-1/5"
+          } h-screen overflow-hidden transition-all`}
       >
         <div className="vp-header h-12 m-7 rounded-md flex gap-5 items-center justify-center">
           <div className="text-white md:text-lg text-xs select-none vp-title">

@@ -2,7 +2,7 @@ from fastapi import UploadFile
 from fastapi.responses import JSONResponse
 from prisma import Prisma
 from shutil import copyfileobj
-from services.chat import get_chat_info
+from services.chat import get_chat_info, create_new_chat
 from os import makedirs, path, environ
 from dotenv import load_dotenv
 from core.main import run_model
@@ -10,45 +10,36 @@ from services.footage.videodata import search_by_footage
 from utils.list import no_repeat_list
 from utils.suggestions import get_suggestions
 
+
 load_dotenv()
 api_host_url = environ["API_HOST_URL"]
 
 
-async def model_service(file: UploadFile, chat_id: str):
+async def model_service(file: UploadFile, usecase: str):
     db = Prisma()
     await db.connect()
-
-    # Checking if chat is valid
-    result = await get_chat_info(chat_id)
-    usecase = result["data"].usecase
-    await db.disconnect()
-    if result["success"] == False:
-        return JSONResponse(
-            status_code=400,
-            content={
-                "success": False,
-                "message": "Invalid Chat",
-                "log:": f"{api_host_url}/logs/error.log",
-            },
-        )
 
     result = upload_footage(file)
     if result["success"] == False:
         return JSONResponse(status_code=400, content=result)
-    else:
-        result = await update_db(file.filename, chat_id)
-        await run_model(file.filename, result.id, usecase)
 
-        # Suggested prompts
-        await db.connect()
-        suggestions = await get_suggestions(db, usecase, result.id)
+    # Creating new chat
+    data = await create_new_chat(usecase)
+    chat_id = data["data"].id
 
-        return {
-            "success": True,
-            "data": {"id": chat_id},
-            "message": "Video Processed Successfully",
-            "suggestions": suggestions,
-        }
+    # Create new footage
+    result = await create_footage(file.filename, chat_id)
+    await run_model(file.filename, result.id, usecase)
+
+    # Suggested prompts
+    suggestions = await get_suggestions(db, usecase, result.id)
+
+    return {
+        "success": True,
+        "data": {"id": chat_id},
+        "message": "Video Processed Successfully",
+        "suggestions": suggestions,
+    }
 
 
 def upload_footage(file: UploadFile):
@@ -81,7 +72,7 @@ def upload_footage(file: UploadFile):
     return {"success": True, "message": "Upload Success"}
 
 
-async def update_db(filename: str, chat_id: str):
+async def create_footage(filename: str, chat_id: str):
     db = Prisma()
     await db.connect()
     result = await db.footage.create(
