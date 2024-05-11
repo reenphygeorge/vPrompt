@@ -1,3 +1,10 @@
+<div align="center">
+  <p>
+  <img src="https://res.cloudinary.com/rxg/image/upload/v1715448682/vprompt/Screenshot_from_2024-05-11_22-59-13_vxzc1l.png" height="150"/>
+  </p>
+  <b> AI based prompt searching tool for video footages</b>
+</div>
+
 ### Prerequisites and Setup
 
 Before starting with the setup process, ensure that you have the following prerequisites installed on your system:
